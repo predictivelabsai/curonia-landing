@@ -12,23 +12,25 @@ from fasthtml.common import (
     H1, H2, H3, H4, H5, H6, P, Ul, Ol, Li, Button, Small, Strong, Em, I,
 )
 
+from utils.i18n import t, LANGUAGES, DEFAULT_LANG
+
 SITE_NAME = "Curonia Capital"
-SITE_TAGLINE = "Baltic growth equity. AI-powered transformation."
 CONTACT_EMAIL = "info@curoniacapital.com"
 LINKEDIN_URL = "#"
 
-NAV_ITEMS = [
-    ("Thesis", "/thesis"),
-    ("Sectors", None, [
-        ("Healthcare", "/sectors/healthcare"),
-        ("Education & EdTech", "/sectors/education"),
-        ("Technology", "/sectors/technology"),
-        ("Services", "/sectors/services"),
-    ]),
-    ("Track Record", "/track-record"),
-    ("Team", "/team"),
-    ("Contact", "/contact"),
-]
+def _nav_items(lang: str):
+    return [
+        (t("nav_thesis", lang), "/thesis"),
+        (t("nav_sectors", lang), None, [
+            (t("nav_healthcare", lang), "/sectors/healthcare"),
+            (t("nav_education", lang), "/sectors/education"),
+            (t("nav_technology", lang), "/sectors/technology"),
+            (t("nav_services", lang), "/sectors/services"),
+        ]),
+        (t("nav_track_record", lang), "/track-record"),
+        (t("nav_team", lang), "/team"),
+        (t("nav_contact", lang), "/contact"),
+    ]
 
 TAILWIND_CONFIG = """
 tailwind.config = {
@@ -102,7 +104,32 @@ def LinkedInIcon():
     )
 
 
-def Navbar(current_path: str = "/"):
+def _LangDropdown(lang: str):
+    current_flag = LANGUAGES.get(lang, LANGUAGES["en"])["flag"]
+    lang_options = [
+        A(f'{info["flag"]} {info["native"]}',
+          href=f"/set-lang/{code}",
+          cls=f"flex items-center gap-2 px-3 py-1.5 rounded text-sm text-ink-muted hover:bg-bg-elevated hover:text-ink transition-colors {'font-semibold text-accent' if code == lang else ''}")
+        for code, info in LANGUAGES.items()
+    ]
+    return Div(
+        Button(
+            current_flag,
+            type="button",
+            onclick="this.nextElementSibling.classList.toggle('hidden')",
+            cls="w-9 h-9 flex items-center justify-center rounded-full border border-line hover:border-accent text-base transition-colors",
+        ),
+        Div(
+            *lang_options,
+            cls="hidden absolute right-0 mt-2 w-36 rounded-xl border border-line bg-white py-1.5 shadow-2xl z-50",
+        ),
+        cls="relative",
+    )
+
+
+def Navbar(current_path: str = "/", lang: str = "en"):
+    nav_items = _nav_items(lang)
+
     def _nav_item(item):
         if len(item) == 2:
             label, href = item
@@ -139,7 +166,7 @@ def Navbar(current_path: str = "/"):
 
     def _flat_mobile():
         out = []
-        for item in NAV_ITEMS:
+        for item in nav_items:
             if len(item) == 2:
                 out.append(item)
             else:
@@ -164,13 +191,17 @@ def Navbar(current_path: str = "/"):
                 cls="flex items-center text-ink text-base hover:text-accent transition-colors",
             ),
             Ul(
-                *[_nav_item(i) for i in NAV_ITEMS],
+                *[_nav_item(i) for i in nav_items],
                 cls="hidden lg:flex items-center gap-7",
             ),
-            A(
-                "Get in touch",
-                href="/contact",
-                cls="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium bg-accent text-white hover:bg-accent-deep transition-colors",
+            Div(
+                _LangDropdown(lang),
+                A(
+                    t("nav_get_in_touch", lang),
+                    href="/contact",
+                    cls="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium bg-accent text-white hover:bg-accent-deep transition-colors",
+                ),
+                cls="hidden lg:flex items-center gap-3",
             ),
             Button(
                 Span("☰", id="nav-burger-icon", cls="text-2xl leading-none"),
@@ -189,8 +220,14 @@ def Navbar(current_path: str = "/"):
         Div(
             Ul(*mobile_items, cls="px-5 pb-5 pt-2 space-y-1"),
             Div(
+                Div(
+                    *[A(f'{info["flag"]} {info["native"]}', href=f"/set-lang/{code}",
+                        cls=f"inline-flex px-3 py-1.5 rounded-full text-xs border {'border-accent text-accent' if code == lang else 'border-line text-ink-muted hover:border-accent'}")
+                      for code, info in LANGUAGES.items()],
+                    cls="flex flex-wrap gap-2 px-5 mb-4",
+                ),
                 A(
-                    "Get in touch",
+                    t("nav_get_in_touch", lang),
                     href="/contact",
                     cls="block text-center px-4 py-3 rounded-full text-sm font-medium bg-accent text-white mx-5 mb-5",
                 ),
@@ -207,21 +244,21 @@ def Section_(*content, bleed=False, cls=""):
     return Section(Div(*content, cls=inner_cls), cls=f"py-14 md:py-20 lg:py-28 {cls}".strip())
 
 
-def Footer_():
+def Footer_(lang: str = "en"):
     columns = [
-        ("Fund", [
-            ("Thesis", "/thesis"),
-            ("Track Record", "/track-record"),
-            ("Team", "/team"),
+        (t("footer_fund", lang), [
+            (t("nav_thesis", lang), "/thesis"),
+            (t("nav_track_record", lang), "/track-record"),
+            (t("nav_team", lang), "/team"),
         ]),
-        ("Sectors", [
-            ("Healthcare", "/sectors/healthcare"),
-            ("Education & EdTech", "/sectors/education"),
-            ("Technology", "/sectors/technology"),
-            ("Services", "/sectors/services"),
+        (t("footer_sectors", lang), [
+            (t("nav_healthcare", lang), "/sectors/healthcare"),
+            (t("nav_education", lang), "/sectors/education"),
+            (t("nav_technology", lang), "/sectors/technology"),
+            (t("nav_services", lang), "/sectors/services"),
         ]),
-        ("Connect", [
-            ("Contact", "/contact"),
+        (t("footer_connect", lang), [
+            (t("nav_contact", lang), "/contact"),
             ("AAA Enterprises", "https://www.aaaenterprises.lt/en"),
         ]),
     ]
@@ -247,11 +284,11 @@ def Footer_():
                         href="/",
                         cls="flex items-center text-lg mb-4",
                     ),
-                    P(SITE_TAGLINE, cls="text-ink-muted text-sm max-w-xs mb-5 leading-relaxed"),
+                    P(t("footer_tagline", lang), cls="text-ink-muted text-sm max-w-xs mb-5 leading-relaxed"),
                     P(
                         "Curonia Capital", NotStr("<br>"),
-                        "Part of AAA Enterprises", NotStr("<br>"),
-                        "Upės str. 21, Vilnius, Lithuania",
+                        t("footer_part_of", lang), NotStr("<br>"),
+                        t("footer_address", lang),
                         cls="text-ink-dim text-xs leading-relaxed",
                     ),
                 ),
@@ -259,7 +296,7 @@ def Footer_():
                 cls="grid grid-cols-2 md:grid-cols-4 gap-10",
             ),
             Div(
-                Div(f"© {__import__('datetime').datetime.now().year} Curonia Capital. Part of AAA Enterprises.", cls="text-ink-dim text-xs"),
+                Div(f"© {__import__('datetime').datetime.now().year} {t('footer_copyright', lang)}", cls="text-ink-dim text-xs"),
                 Div(
                     A(CONTACT_EMAIL, href=f"mailto:{CONTACT_EMAIL}", cls="text-ink-dim text-xs hover:text-accent break-all"),
                     cls="flex items-center flex-wrap gap-y-2",
@@ -272,11 +309,12 @@ def Footer_():
     )
 
 
-def page(title: str, current_path: str = "/", *content, head_extra=None, body_extra=None):
+def page(title: str, current_path: str = "/", *content, head_extra=None, body_extra=None, lang: str = "en"):
+    tagline = t("footer_tagline", lang)
     head_children = [
         Meta(charset="utf-8"),
         Meta(name="viewport", content="width=device-width, initial-scale=1"),
-        Meta(name="description", content=f"{SITE_NAME} — {SITE_TAGLINE}"),
+        Meta(name="description", content=f"{SITE_NAME} — {tagline}"),
         Title(f"{title} · {SITE_NAME}"),
         Link(rel="preconnect", href="https://fonts.googleapis.com"),
         Link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin=""),
@@ -291,10 +329,12 @@ def page(title: str, current_path: str = "/", *content, head_extra=None, body_ex
     if head_extra:
         head_children.extend(head_extra if isinstance(head_extra, list) else [head_extra])
 
+    html_lang = {"en": "en", "lt": "lt", "lv": "lv", "et": "et"}.get(lang, "en")
+
     body_children = [
-        Navbar(current_path),
+        Navbar(current_path, lang=lang),
         Main(*content, cls="min-h-screen"),
-        Footer_(),
+        Footer_(lang=lang),
     ]
     if body_extra:
         body_children.extend(body_extra if isinstance(body_extra, list) else [body_extra])
@@ -302,36 +342,30 @@ def page(title: str, current_path: str = "/", *content, head_extra=None, body_ex
     return Html(
         Head(*head_children),
         Body(*body_children, cls="bg-bg text-ink font-sans antialiased"),
-        lang="en",
+        lang=html_lang,
     )
 
 
-def Hero(*, eyebrow="Baltic Growth Equity", headline=None, lede=None, ctas=None, canvas=True, tall=True):
-    headline = headline or (
-        Span("AI-powered transformation "),
-        Span("of Baltic enterprises.", cls="text-accent"),
+def Hero(*, lang: str = "en", canvas=True, tall=True):
+    headline = (
+        Span(t("hero_h1_1", lang)),
+        Span(t("hero_h1_2", lang), cls="text-accent"),
     )
-    lede = lede or (
-        "Curonia Capital is a growth equity fund partnering with founder-led and family-owned Baltic SMEs "
-        "to accelerate expansion through AI-driven growth and selective consolidation. "
-        "Part of AAA Enterprises."
-    )
-    ctas = ctas or [("Read the thesis", "/thesis", True), ("Meet the team", "/team", False)]
+    lede = t("hero_lede", lang)
+    ctas = [(t("hero_cta_thesis", lang), "/thesis", True), (t("hero_cta_team", lang), "/team", False)]
 
     height = "min-h-[78vh] md:min-h-[86vh]" if tall else "min-h-[54vh] md:min-h-[58vh]"
 
     canvas_div = Div(id="three-hero", cls="absolute inset-0 z-10 opacity-40 pointer-events-none") if canvas else None
-
-    lede_nodes = lede if isinstance(lede, tuple) else (lede,)
 
     return Section(
         Div(
             canvas_div,
             Div(cls="absolute inset-0 z-20 bg-gradient-to-b from-bg/10 via-transparent to-bg pointer-events-none"),
             Div(
-                Eyebrow(eyebrow),
-                H1(*headline if isinstance(headline, tuple) else [headline], cls="mt-5 md:mt-6 text-[40px] sm:text-5xl md:text-7xl lg:text-[84px] font-medium tracking-tightest text-ink leading-[1.05] md:leading-[1.02] max-w-5xl"),
-                P(*lede_nodes, cls="mt-6 md:mt-8 text-base md:text-xl text-ink-muted max-w-2xl leading-relaxed"),
+                Eyebrow(t("hero_eyebrow", lang)),
+                H1(*headline, cls="mt-5 md:mt-6 text-[40px] sm:text-5xl md:text-7xl lg:text-[84px] font-medium tracking-tightest text-ink leading-[1.05] md:leading-[1.02] max-w-5xl"),
+                P(lede, cls="mt-6 md:mt-8 text-base md:text-xl text-ink-muted max-w-2xl leading-relaxed"),
                 Div(
                     *[Button_(text, href=href, primary=primary) for text, href, primary in ctas],
                     cls="mt-8 md:mt-10 flex items-center gap-3 flex-wrap",
@@ -342,11 +376,11 @@ def Hero(*, eyebrow="Baltic Growth Equity", headline=None, lede=None, ctas=None,
         ),
         Div(
             Div(
-                Div("Part of AAA Enterprises", cls="text-[11px] md:text-xs font-mono tracking-[0.18em] uppercase text-ink-dim"),
+                Div(t("hero_parent", lang), cls="text-[11px] md:text-xs font-mono tracking-[0.18em] uppercase text-ink-dim"),
                 Div(
-                    Span("Group assets ", cls="text-ink-muted text-xs md:text-sm"),
+                    Span(t("hero_group_assets", lang) + " ", cls="text-ink-muted text-xs md:text-sm"),
                     Span("~€3B ", cls="text-accent text-xs md:text-sm font-mono"),
-                    Span("· €750M+ AUM · since 1993", cls="text-ink-muted text-xs md:text-sm"),
+                    Span(t("hero_since", lang), cls="text-ink-muted text-xs md:text-sm"),
                 ),
                 cls="max-w-7xl mx-auto px-5 md:px-6 py-4 md:py-5 flex items-center justify-between flex-wrap gap-3",
             ),
@@ -380,18 +414,19 @@ def MetricTile(value, unit, caption, *, cls=""):
     )
 
 
-def CTASection(*, headline="Building a Baltic platform worth backing?",
-               body="Curonia Capital partners with founder-led Baltic SMEs in healthcare, education, technology and services. €2–5M cheques. Tell us about your business.",
-               cta_label="Get in touch", cta_href="/contact"):
+def CTASection(*, headline=None, body=None, cta_label=None, cta_href="/contact", lang: str = "en"):
+    headline = headline or t("cta_heading", lang)
+    body = body or t("cta_body", lang)
+    cta_label = cta_label or t("cta_button", lang)
     return Section(
         Div(
             Div(
-                Eyebrow("Engage"),
+                Eyebrow(t("cta_eyebrow", lang)),
                 Heading(2, headline, cls="mt-4 max-w-3xl"),
                 P(body, cls="mt-5 text-ink-muted text-lg max-w-2xl leading-relaxed"),
                 Div(
                     Button_(cta_label, href=cta_href, primary=True),
-                    Button_("Read the thesis", href="/thesis", primary=False),
+                    Button_(t("cta_thesis", lang), href="/thesis", primary=False),
                     cls="mt-8 flex items-center gap-3 flex-wrap",
                 ),
                 cls="max-w-7xl mx-auto px-6 py-20 md:py-28 relative z-10",
@@ -403,7 +438,7 @@ def CTASection(*, headline="Building a Baltic platform worth backing?",
 
 
 def NewsSection(*, category: str, title: str = "Market intelligence",
-                subtitle: str | None = None, eyebrow: str = "News"):
+                subtitle: str | None = None, lang: str = "en"):
     from content import news as _news
 
     items = _news.items_for(category)
@@ -429,19 +464,20 @@ def NewsSection(*, category: str, title: str = "Market intelligence",
         )
 
     last = _news.last_refresh_iso()
+    last_label = t("news_last_refresh", lang)
 
     return Section_(
         Div(
             Div(
-                Eyebrow(eyebrow),
+                Eyebrow(t("news_eyebrow", lang)),
                 Heading(2, title, cls="mt-4 max-w-3xl"),
                 P(subtitle, cls="mt-4 text-ink-muted max-w-2xl leading-relaxed") if subtitle else None,
                 cls="md:flex-1",
             ),
             Div(
-                Span("Refreshed hourly from PE and financial RSS feeds.",
+                Span(t("news_refresh", lang),
                      cls="text-ink-dim text-xs"),
-                Span(NotStr("&nbsp;·&nbsp;") + f"Last refresh: {last}" if last else "",
+                Span(NotStr("&nbsp;·&nbsp;") + f"{last_label}: {last}" if last else "",
                      cls="text-ink-dim text-xs"),
                 cls="text-left md:text-right md:max-w-xs mt-4 md:mt-0",
             ),

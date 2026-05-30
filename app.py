@@ -1,14 +1,15 @@
 """
-Curonia Capital — multipage FastHTML landing site.
+Curonia Capital — multipage FastHTML landing site with i18n (EN/LT/LV/ET).
 
 Baltic growth equity fund: AI-powered transformation of founder-led SMEs.
 Part of AAA Enterprises. Content lives in content/*.py; routes are thin
-composition over components.py.
+composition over components.py. Language is stored in session cookie.
 """
 
 from fasthtml.common import (
     fast_app, serve, Div, Span, A, P, Ul, Li, Section, Article, Header, Table,
     Thead, Tbody, Tr, Th, Td, NotStr, Script, Style, H1, H2, H3, H4, Button,
+    RedirectResponse,
 )
 
 from components import (
@@ -18,116 +19,113 @@ from components import (
 )
 from content.team import TEAM
 from content import news as news_mod
+from utils.i18n import t, get_lang, set_lang
 
 news_mod.start_background_refresh()
 
-app, rt = fast_app(live=False, static_path=".", pico=False)
+app, rt = fast_app(live=False, static_path=".", pico=False, secret_key="curonia-cap-2024")
+
+BIO_KEYS = {"Aurimas Martišauskas": "bio_am", "Matas Jakubėlis": "bio_mj",
+            "Julian Kaljuvee": "bio_jk", "Ieva Belickaitė": "bio_ib"}
+
+
+# ---------- Language switcher ----------
+
+@rt("/set-lang/{code}")
+def set_language(code: str, sess):
+    set_lang(sess, code)
+    ref = sess.get("_referer", "/")
+    return RedirectResponse(ref, status_code=303)
 
 
 # ---------- / Home ----------
 
 @rt("/")
-def home():
+def home(sess):
+    lang = get_lang(sess)
+    sess["_referer"] = "/"
+
     pillars = [
-        ("01", "AI playbook", "Our in-house engineering team deploys AI to digitise workflows, automate operations and build proprietary data infrastructure at every portfolio company — no external consultants, faster execution."),
-        ("02", "Founder partnership", "Baltic founders aged 55–65 have built strong businesses without institutional capital. They want to professionalise and grow, not exit outright. Growth equity with minority stake lets them retain control."),
-        ("03", "Selective consolidation", "The Baltic mid-market is structurally fragmented — hundreds of €2–20M revenue businesses with no scaled regional competitor. We consolidate through bolt-on acquisitions on a unified technology platform."),
-        ("04", "Visible exit", "For each platform we underwrite, we map the credible acquirer set — regional strategics, larger PE consolidators, international corporates — before committing capital."),
+        ("01", t("pillar_1_title", lang), t("pillar_1_body", lang)),
+        ("02", t("pillar_2_title", lang), t("pillar_2_body", lang)),
+        ("03", t("pillar_3_title", lang), t("pillar_3_body", lang)),
+        ("04", t("pillar_4_title", lang), t("pillar_4_body", lang)),
     ]
 
     return page(
-        "Baltic growth equity, AI-powered",
+        t("hero_eyebrow", lang),
         "/",
-        Hero(),
+        Hero(lang=lang),
 
-        # Fund overview
         Section_(
             Div(
-                Eyebrow("Fund overview"),
-                Heading(2, "Growth equity for the Baltic transformation.", cls="mt-4 max-w-4xl"),
-                P(
-                    "A €50M growth equity fund partnering with founder-led and family-owned Baltic SMEs "
-                    "to accelerate expansion through AI-driven growth and selective consolidation.",
-                    cls="mt-5 text-ink-muted text-lg max-w-3xl leading-relaxed",
-                ),
+                Eyebrow(t("fund_eyebrow", lang)),
+                Heading(2, t("fund_heading", lang), cls="mt-4 max-w-4xl"),
+                P(t("fund_lede", lang), cls="mt-5 text-ink-muted text-lg max-w-3xl leading-relaxed"),
                 cls="mb-14",
             ),
             Div(
-                MetricTile("€50", "M", "Fund size"),
-                MetricTile("€2–5", "M", "Investment per company, up to €8M with follow-on"),
-                MetricTile("5–10", "", "Expected number of investments"),
-                MetricTile("25", "%", "Target IRR"),
-                MetricTile("7+2", "yr", "Fund term"),
-                MetricTile("LT LV EE", "", "Geography — Lithuania, Latvia, Estonia"),
+                MetricTile("€50", "M", t("metric_fund_size", lang)),
+                MetricTile("€2–5", "M", t("metric_investment", lang)),
+                MetricTile("5–10", "", t("metric_investments", lang)),
+                MetricTile("25", "%", t("metric_target_irr", lang)),
+                MetricTile("7+2", "yr", t("metric_fund_term", lang)),
+                MetricTile("LT LV EE", "", t("metric_geography", lang)),
                 cls="grid md:grid-cols-3 lg:grid-cols-6 gap-4",
             ),
             cls="border-b border-line",
         ),
 
-        # Thesis pillars
         Section_(
             Div(
-                Eyebrow("Investment thesis"),
-                Heading(2, "AI-led organic growth, reinforced by selective consolidation.", cls="mt-4 max-w-4xl"),
-                P(
-                    "We target founder-led and family-owned SMEs with €2M–€20M revenue, proven models, "
-                    "and clear AI-enabled value creation potential. Unlike any other Baltic PE fund, "
-                    "we build and deploy AI ourselves.",
-                    cls="mt-5 text-ink-muted text-lg max-w-3xl",
-                ),
+                Eyebrow(t("thesis_eyebrow", lang)),
+                Heading(2, t("thesis_heading", lang), cls="mt-4 max-w-4xl"),
+                P(t("thesis_lede", lang), cls="mt-5 text-ink-muted text-lg max-w-3xl"),
                 cls="mb-14",
             ),
             Div(
-                *[Pillar(n, t, b) for n, t, b in pillars],
+                *[Pillar(n, ti, bo) for n, ti, bo in pillars],
                 cls="grid md:grid-cols-2 lg:grid-cols-4 gap-5",
             ),
         ),
 
-        # Sector focus
         Section_(
             Div(
-                Eyebrow("Where we invest"),
-                Heading(2, "Four sectors we can transform with AI.", cls="mt-4 max-w-4xl"),
+                Eyebrow(t("sectors_eyebrow", lang)),
+                Heading(2, t("sectors_heading", lang), cls="mt-4 max-w-4xl"),
                 cls="mb-14",
             ),
             Div(
-                _sector_link("Healthcare", "Dental clinics, dermatology & aesthetics, facility-based healthcare and medtech — fragmented single-site practices ripe for platform consolidation.", "/sectors/healthcare"),
-                _sector_link("Education & EdTech", "K-12 and private schools, tutoring platforms, vocational training and digital learning — fragmented chains at sub-€10M scale.", "/sectors/education"),
-                _sector_link("Technology", "Vertical SaaS, fintech, cybersecurity, data infrastructure, IoT and managed services — software and data plays with sticky workflows.", "/sectors/technology"),
-                _sector_link("Services", "Professional services, engineering, staffing, testing & inspection — fragmented service verticals we can transform with AI.", "/sectors/services"),
+                _sector_link(t("sector_healthcare_title", lang), t("sector_healthcare_body", lang), "/sectors/healthcare"),
+                _sector_link(t("sector_education_title", lang), t("sector_education_body", lang), "/sectors/education"),
+                _sector_link(t("sector_technology_title", lang), t("sector_technology_body", lang), "/sectors/technology"),
+                _sector_link(t("sector_services_title", lang), t("sector_services_body", lang), "/sectors/services"),
                 cls="grid md:grid-cols-2 gap-5",
             ),
             cls="border-y border-line bg-bg-elevated/40",
         ),
 
-        # Track record teaser
         Section_(
             Div(
-                Eyebrow("Track record"),
-                Heading(2, "Built on a platform with €3B+ in group assets.", cls="mt-4 max-w-3xl"),
-                P(
-                    "Curonia Capital is part of AAA Enterprises, an international group of licensed financial companies "
-                    "operating since 1993. Our team has direct operating experience from 1 Asset Management's "
-                    "€750M+ AUM portfolio — including the Pet Care Growth Fund and the Education Infrastructure Fund.",
-                    cls="mt-5 text-ink-muted text-lg max-w-3xl leading-relaxed",
-                ),
-                Button_("See the full track record", href="/track-record", primary=False, cls="mt-8"),
+                Eyebrow(t("track_eyebrow", lang)),
+                Heading(2, t("track_heading", lang), cls="mt-4 max-w-3xl"),
+                P(t("track_lede", lang), cls="mt-5 text-ink-muted text-lg max-w-3xl leading-relaxed"),
+                Button_(t("track_cta", lang), href="/track-record", primary=False, cls="mt-8"),
                 cls="mb-14",
             ),
             Div(
-                _track_tile("~€3B", "Total group assets managed and administered"),
-                _track_tile("€750M+", "AUM at 1 Asset Management across 12+ funds"),
-                _track_tile("100+", "Professionals across the AAA Enterprises group"),
-                _track_tile("Since 1993", "Operating across Europe, regulated by Bank of Lithuania"),
+                _track_tile("~€3B", t("track_tile_1", lang)),
+                _track_tile("€750M+", t("track_tile_2", lang)),
+                _track_tile("100+", t("track_tile_3", lang)),
+                _track_tile("Since 1993", t("track_tile_4", lang)),
                 cls="grid md:grid-cols-2 lg:grid-cols-4 gap-5",
             ),
         ),
 
-        # Team teaser
         Section_(
             Div(
-                Eyebrow("Team"),
-                Heading(2, "Partners with PE, VC, investment banking, AI engineering, and operational transformation experience.", cls="mt-4 max-w-4xl"),
+                Eyebrow(t("team_eyebrow", lang)),
+                Heading(2, t("team_heading", lang), cls="mt-4 max-w-4xl"),
                 cls="mb-14",
             ),
             Div(
@@ -135,7 +133,7 @@ def home():
                 cls="grid md:grid-cols-2 lg:grid-cols-4 gap-5",
             ),
             Div(
-                Button_("Meet the full team", href="/team", primary=False),
+                Button_(t("team_cta", lang), href="/team", primary=False),
                 cls="mt-10",
             ),
             cls="border-t border-line",
@@ -143,15 +141,15 @@ def home():
 
         NewsSection(
             category="home",
-            title="Market intelligence.",
-            subtitle="A rolling mix of private equity, financial markets and Baltic economy news from public PE and financial feeds. Refreshed hourly.",
+            title=t("news_home_title", lang),
+            subtitle=t("news_home_sub", lang),
+            lang=lang,
         ),
 
-        CTASection(),
+        CTASection(lang=lang),
 
-        body_extra=[
-            Script(src="/static/three-hero.js", type="module"),
-        ],
+        body_extra=[Script(src="/static/three-hero.js", type="module")],
+        lang=lang,
     )
 
 
@@ -198,54 +196,46 @@ def _team_card_compact(m):
 # ---------- /thesis ----------
 
 @rt("/thesis")
-def thesis():
+def thesis(sess):
+    lang = get_lang(sess)
+    sess["_referer"] = "/thesis"
+
     pillars = [
-        ("01", "AI playbook", "Our DeployCo model applies AI to traditional businesses where it moves the needle. We screen for high volume document or call workflows, structured data, and repetitive admin. Our in-house engineering team deploys models within months. Healthcare diagnostics, ICT support, accounting and HR services fit; hands-on trades do not."),
-        ("02", "Founder partnership", "Baltic founders, aged 55 to 65, built businesses without institutional capital and lack the balance sheet to fund the next growth phase. Many want to retain majority, professionalise the company, and exit in 3 to 7 years on a planned timeline. Growth equity (minority stake, founder stays operating, capital for AI and expansion) is culturally and commercially the right structure."),
-        ("03", "Selective consolidation", "The Baltic mid market is structurally fragmented, with hundreds of €2 to 20M revenue businesses and no scaled regional competitor. Where bolt-ons sharpen the platform, we consolidate. We then, if necessary, internationalise into Nordics, Poland and CEE through M&A or organic expansion, building the regional champion that strategics will pay for at exit."),
-        ("04", "Visible exit", "For each platform we underwrite, we map the credible acquirer set (regional strategics, larger PE consolidators, international corporates with Baltic ambitions) before committing capital. A pan-Baltic, AI-enhanced platform attracts multiple competing buyers at exit, with strategics paying for both the regional footprint and the embedded technology."),
+        ("01", t("pillar_1_title", lang), t("thesis_p1_body", lang)),
+        ("02", t("pillar_2_title", lang), t("thesis_p2_body", lang)),
+        ("03", t("pillar_3_title", lang), t("thesis_p3_body", lang)),
+        ("04", t("pillar_4_title", lang), t("thesis_p4_body", lang)),
     ]
 
     value_creation = [
-        ("Digitise", "Replace manual workflows with cloud-native systems deployed by our in-house AI engineering team."),
-        ("Automate operations", "AI-driven scheduling, billing, HR analytics, reporting and compliance automation across all portfolio companies."),
-        ("Consolidate data", "Build proprietary data infrastructure — creating defensible analytics moats no competitor can replicate."),
-        ("Scale pan-Baltic", "Bolt-on acquisitions across Baltics on unified technology platform, leveraging sector sourcing networks."),
+        (t("vc_digitise", lang), t("vc_digitise_body", lang)),
+        (t("vc_automate", lang), t("vc_automate_body", lang)),
+        (t("vc_consolidate", lang), t("vc_consolidate_body", lang)),
+        (t("vc_scale", lang), t("vc_scale_body", lang)),
     ]
 
     return page(
-        "Investment Thesis",
+        t("thesis_page_title", lang),
         "/thesis",
         Section_(
-            Eyebrow("Investment thesis"),
-            Heading(1, "AI-led organic growth, reinforced by selective consolidation.", cls="mt-5 max-w-5xl"),
-            P(
-                "Curonia Capital is a €50M Growth Equity Fund partnering with founder-led and family-owned Baltic SMEs "
-                "to accelerate expansion through AI-driven growth and selective add-ons. The fund is sector-agnostic, "
-                "with a primary focus on Education, Healthcare, and Technology, targeting companies with proven models, "
-                "recurring revenue, AI-enabled value creation potential, and clear exit pathways.",
-                cls="mt-8 text-xl text-ink-muted max-w-3xl leading-relaxed",
-            ),
+            Eyebrow(t("thesis_eyebrow", lang)),
+            Heading(1, t("thesis_heading", lang), cls="mt-5 max-w-5xl"),
+            P(t("thesis_page_lede", lang), cls="mt-8 text-xl text-ink-muted max-w-3xl leading-relaxed"),
             cls="pt-24",
         ),
         Section_(
             Div(
-                Eyebrow("Four pillars"),
-                Heading(2, "How we invest.", cls="mt-4"),
+                Eyebrow(t("thesis_pillars_eyebrow", lang)),
+                Heading(2, t("thesis_pillars_heading", lang), cls="mt-4"),
                 cls="mb-14",
             ),
-            Div(*[_thesis_row(n, t, b) for n, t, b in pillars], cls="divide-y divide-line border-y border-line"),
+            Div(*[_thesis_row(n, ti, bo) for n, ti, bo in pillars], cls="divide-y divide-line border-y border-line"),
         ),
         Section_(
             Div(
-                Eyebrow("Value creation"),
-                Heading(2, "Technology enablement at every portfolio company.", cls="mt-4 max-w-4xl"),
-                P(
-                    "Unlike any other Baltic PE fund, we build and deploy AI ourselves. "
-                    "Julian Kaljuvee (Blackstone / Microsoft AI) + the in-house AI engineer transform every portfolio company directly — "
-                    "no external consultants, faster execution.",
-                    cls="mt-5 text-ink-muted text-lg max-w-3xl leading-relaxed",
-                ),
+                Eyebrow(t("vc_eyebrow", lang)),
+                Heading(2, t("vc_heading", lang), cls="mt-4 max-w-4xl"),
+                P(t("vc_lede", lang), cls="mt-5 text-ink-muted text-lg max-w-3xl leading-relaxed"),
                 cls="mb-14",
             ),
             Div(
@@ -254,30 +244,31 @@ def thesis():
                         Span(f"0{i+1}", cls="font-mono text-xs tracking-widest text-accent"),
                         cls="mb-3",
                     ),
-                    Heading(3, title, cls="mb-2"),
-                    P(body, cls="text-ink-muted text-sm leading-relaxed"),
+                    Heading(3, vc_title, cls="mb-2"),
+                    P(vc_body, cls="text-ink-muted text-sm leading-relaxed"),
                     cls="p-7 rounded-2xl bg-white border border-line",
-                ) for i, (title, body) in enumerate(value_creation)],
+                ) for i, (vc_title, vc_body) in enumerate(value_creation)],
                 cls="grid md:grid-cols-2 lg:grid-cols-4 gap-5",
             ),
             cls="border-t border-line bg-bg-elevated/40",
         ),
         Section_(
             Div(
-                Eyebrow("Entry and exit"),
-                Heading(2, "Disciplined valuation framework.", cls="mt-4 max-w-4xl"),
+                Eyebrow(t("ee_eyebrow", lang)),
+                Heading(2, t("ee_heading", lang), cls="mt-4 max-w-4xl"),
                 cls="mb-14",
             ),
             Div(
-                MetricTile("3–6×", "EBITDA", "Cash-generative platforms · Entry"),
-                MetricTile("10–14×", "EBITDA", "Pan-Baltic platform · Exit"),
-                MetricTile("3–5×", "ARR", "SaaS / vertical software · Entry"),
-                MetricTile("6–9×", "ARR", "AI-native, sticky platform · Exit"),
+                MetricTile("3–6×", "EBITDA", t("ee_entry_cash", lang)),
+                MetricTile("10–14×", "EBITDA", t("ee_exit_pan", lang)),
+                MetricTile("3–5×", "ARR", t("ee_entry_saas", lang)),
+                MetricTile("6–9×", "ARR", t("ee_exit_ai", lang)),
                 cls="grid md:grid-cols-2 lg:grid-cols-4 gap-5",
             ),
         ),
-        CTASection(),
+        CTASection(lang=lang),
         body_extra=[Script(src="/static/three-hero.js", type="module")],
+        lang=lang,
     )
 
 
@@ -298,201 +289,190 @@ def _thesis_row(number, title, body):
 
 # ---------- /sectors/* ----------
 
-SECTORS = {
+_SECTOR_KEYS = {
     "healthcare": {
-        "title": "Healthcare",
-        "eyebrow": "Healthcare",
-        "headline": "Facility-based healthcare and medtech — thousands of fragmented single-site practices.",
-        "lede": "The Lithuanian dental market is dominated by founder-led practices with no brand, no digital marketing and limited cross-sell. European medical aesthetics is growing at 12% CAGR with no consolidated Baltic platform. We invest in multi-site clinics and shift the revenue mix toward higher-margin procedures.",
-        "pillars": [
-            ("Dental clinics", "Grow multi-site dental networks, shift revenue toward aesthetic dentistry — whitening, aligners, veneers, implants. Centralise procurement, layer AI dental imaging across all sites."),
-            ("Dermatology & aesthetics", "Consolidate profitable clinics across Vilnius, Kaunas and Klaipėda onto one brand, one booking system and shared procurement. Deploy AI skin diagnostics as a front-door tool."),
-            ("Medical tourism", "Package aesthetic dental and skin procedures at 3–5× cost advantage vs Nordics/UK. Proven model in Baltic plastic surgery."),
-        ],
-        "register": ["Facility-based", "AI diagnostics", "Pan-Baltic platform"],
+        "eyebrow": "nav_healthcare",
+        "title": "nav_healthcare",
+        "headline": "sh_headline",
+        "lede": "sh_lede",
+        "pillars": [("sh_dental", "sh_dental_body"), ("sh_derma", "sh_derma_body"), ("sh_tourism", "sh_tourism_body")],
+        "pills": "sh_pills",
         "news_key": "healthcare",
-        "news_title": "Healthcare PE signal.",
-        "news_sub": "Private equity activity in European healthcare, dental and medtech sectors.",
+        "news_title": "sh_news_title",
+        "news_sub": "sh_news_sub",
     },
     "education": {
-        "title": "Education & EdTech",
-        "eyebrow": "Education & EdTech",
-        "headline": "Founder-owned schools, training providers and digital learning platforms.",
-        "lede": "The global online tutoring market is shifting toward AI-driven personalisation. Lithuania's school-age tutoring market is fragmented across individual tutors and small platforms. We invest in online tutoring platforms and vocational training providers, deploying AI content layers and scaling across Baltic and diaspora markets.",
-        "pillars": [
-            ("Online tutoring (K-12)", "Consolidate Lithuanian tutoring platforms onto one stack. Deploy AI content layer to replace 1-on-1 tutor hours with AI study programmes. Convert take-rate to SaaS subscriptions."),
-            ("Vocational & skills training", "Invest in certified schools across beauty, wellness, IT — aggregate onto one accredited platform. Scale through state-funded programmes and cross-border expansion."),
-            ("School infrastructure", "Leverage 1AM Education Infrastructure Fund relationships with Šiaurės Licėjus, Erudito Licėjus, Saulės Gojus and Vilnius International School."),
-        ],
-        "register": ["AI content", "B2B + B2G channels", "Cross-border"],
+        "eyebrow": "nav_education",
+        "title": "nav_education",
+        "headline": "se_headline",
+        "lede": "se_lede",
+        "pillars": [("se_tutoring", "se_tutoring_body"), ("se_vocational", "se_vocational_body"), ("se_schools", "se_schools_body")],
+        "pills": "se_pills",
         "news_key": "education",
-        "news_title": "Education & EdTech signal.",
-        "news_sub": "PE activity and trends in European education, edtech and training sectors.",
+        "news_title": "se_news_title",
+        "news_sub": "se_news_sub",
     },
     "technology": {
-        "title": "Technology & Digital Infrastructure",
-        "eyebrow": "Technology",
-        "headline": "Software, data and infrastructure plays with sticky workflows and resilience to AI.",
-        "lede": "We invest in vertical SaaS, fintech, cybersecurity, data analytics and managed IT services. The focus is on businesses with proprietary data moats, high switching costs, and the ability to embed AI directly into their product — making them more valuable, not more vulnerable.",
-        "pillars": [
-            ("Vertical SaaS & platform software", "ERP, insurtech, payment rails and industry-specific software with deep workflow integration and high retention."),
-            ("IT services & managed services", "MSPs, hosting and integrators across HR, ERP and logistics — consolidate a vertical and internationalise with AI accelerating code, data and ticketing migration."),
-            ("Cybersecurity & data infrastructure", "Data, analytics and AI infrastructure plays with defensible moats. Digital infra, data centres and telecommunications."),
-        ],
-        "register": ["Sticky workflows", "Proprietary data", "AI-resilient"],
+        "eyebrow": "nav_technology",
+        "title": "nav_technology",
+        "headline": "st_headline",
+        "lede": "st_lede",
+        "pillars": [("st_saas", "st_saas_body"), ("st_it", "st_it_body"), ("st_cyber", "st_cyber_body")],
+        "pills": "st_pills",
         "news_key": "technology",
-        "news_title": "Technology PE signal.",
-        "news_sub": "Private equity activity in European SaaS, IT services and digital infrastructure.",
+        "news_title": "st_news_title",
+        "news_sub": "st_news_sub",
     },
     "services": {
-        "title": "Tech-Enabled Services & B2B/C",
-        "eyebrow": "Services",
-        "headline": "Fragmented service verticals we can transform with AI.",
-        "lede": "Industrial, technical and professional services across the Baltics — each with hundreds of small operators, no regional champion, and high potential for AI-driven operational improvement. We screen for businesses where AI can automate scheduling, dispatch, compliance, customer communication and back-office at scale.",
-        "pillars": [
-            ("Professional services", "Legal, audit, advisory, accounting — fragmented practices we can platform with shared AI tooling for document processing, compliance and client management."),
-            ("Engineering & construction", "Testing, inspection, certification and M&E services with repeatable workflows, regulatory demand and cross-border expansion potential."),
-            ("Staffing & workforce services", "Training, recruitment and workforce management — sectors where AI can automate matching, scheduling and credential verification at scale."),
-        ],
-        "register": ["AI automation", "Workforce uplift", "Sector agnostic"],
+        "eyebrow": "nav_services",
+        "title": "nav_services",
+        "headline": "ss_headline",
+        "lede": "ss_lede",
+        "pillars": [("ss_professional", "ss_professional_body"), ("ss_engineering", "ss_engineering_body"), ("ss_staffing", "ss_staffing_body")],
+        "pills": "ss_pills",
         "news_key": "services",
-        "news_title": "Business services PE signal.",
-        "news_sub": "Private equity activity in European professional and business services.",
+        "news_title": "ss_news_title",
+        "news_sub": "ss_news_sub",
     },
 }
 
 
-SECTOR_NEWS = {
-    "healthcare": ("healthcare", "Healthcare PE signal.", "Private equity activity in European healthcare, dental and medtech sectors."),
-    "education": ("education", "Education & EdTech signal.", "PE activity and trends in European education, edtech and training sectors."),
-    "technology": ("technology", "Technology PE signal.", "Private equity activity in European SaaS, IT services and digital infrastructure."),
-    "services": ("services", "Business services PE signal.", "Private equity activity in European professional and business services."),
-}
+def _get_pills(key, lang):
+    from utils.i18n import TRANSLATIONS
+    entry = TRANSLATIONS.get(key, {})
+    val = entry.get(lang) or entry.get("en") or []
+    return val if isinstance(val, list) else [val]
 
 
-def _sector_page(slug):
-    s = SECTORS[slug]
-    news_key, news_title, news_sub = SECTOR_NEWS[slug]
+def _sector_page(slug, lang):
+    sk = _SECTOR_KEYS[slug]
+
+    pills = _get_pills(sk["pills"], lang)
 
     return page(
-        s["title"],
+        t(sk["title"], lang),
         f"/sectors/{slug}",
         Section_(
-            Eyebrow(s["eyebrow"]),
-            Heading(1, s["headline"], cls="mt-5 max-w-5xl"),
-            P(s["lede"], cls="mt-8 text-xl text-ink-muted max-w-3xl leading-relaxed"),
+            Eyebrow(t(sk["eyebrow"], lang)),
+            Heading(1, t(sk["headline"], lang), cls="mt-5 max-w-5xl"),
+            P(t(sk["lede"], lang), cls="mt-8 text-xl text-ink-muted max-w-3xl leading-relaxed"),
             Div(
-                *[Pill(r) for r in s["register"]],
+                *[Pill(r) for r in pills],
                 cls="mt-10 flex flex-wrap gap-2",
             ),
             cls="pt-24",
         ),
         Section_(
             Div(
-                Eyebrow("Where we focus"),
-                Heading(2, "Three focal points in this sector.", cls="mt-4"),
+                Eyebrow(t("sp_where_focus", lang)),
+                Heading(2, t("sp_focal_points", lang), cls="mt-4"),
                 cls="mb-14",
             ),
             Div(
-                *[Pillar(f"0{i+1}", t, b) for i, (t, b) in enumerate(s["pillars"])],
+                *[Pillar(f"0{i+1}", t(tk, lang), t(bk, lang)) for i, (tk, bk) in enumerate(sk["pillars"])],
                 cls="grid md:grid-cols-3 gap-5",
             ),
         ),
-        NewsSection(category=news_key, title=news_title, subtitle=news_sub),
-        CTASection(),
+        NewsSection(category=sk["news_key"], title=t(sk["news_title"], lang), subtitle=t(sk["news_sub"], lang), lang=lang),
+        CTASection(lang=lang),
+        lang=lang,
     )
 
 
 @rt("/sectors/healthcare")
-def sec_healthcare():
-    return _sector_page("healthcare")
+def sec_healthcare(sess):
+    lang = get_lang(sess)
+    sess["_referer"] = "/sectors/healthcare"
+    return _sector_page("healthcare", lang)
 
 
 @rt("/sectors/education")
-def sec_education():
-    return _sector_page("education")
+def sec_education(sess):
+    lang = get_lang(sess)
+    sess["_referer"] = "/sectors/education"
+    return _sector_page("education", lang)
 
 
 @rt("/sectors/technology")
-def sec_technology():
-    return _sector_page("technology")
+def sec_technology(sess):
+    lang = get_lang(sess)
+    sess["_referer"] = "/sectors/technology"
+    return _sector_page("technology", lang)
 
 
 @rt("/sectors/services")
-def sec_services():
-    return _sector_page("services")
+def sec_services(sess):
+    lang = get_lang(sess)
+    sess["_referer"] = "/sectors/services"
+    return _sector_page("services", lang)
 
 
 # ---------- /track-record ----------
 
 @rt("/track-record")
-def track_record():
+def track_record(sess):
+    lang = get_lang(sess)
+    sess["_referer"] = "/track-record"
+
     group_entities = [
-        ("1 Asset Management", "Licensed asset manager with €750M+ AUM and 12+ niche investment strategies across real estate, private debt, education infrastructure and pet care.", "€750M+ AUM"),
-        ("RATO Bank", "Specialised Lithuanian bank focused on lending, deposits, and modern financial services for individuals and businesses.", "€120M+ deposits"),
-        ("Orion Securities", "Leading Lithuanian investment bank providing capital markets services, including brokerage, corporate finance, venture capital, and wealth management.", "€2.1B+ custody"),
-        ("Taurus Wealth", "Lithuania-based investment firm focused on sustainable investing and long-term value creation through strategic investments.", "€95M+ AUM"),
-        ("AAA Law", "Lithuanian business law firm advising companies and investors on corporate, IP, regulatory and dispute resolution matters.", "100+ professionals"),
+        ("1 Asset Management", t("tr_1am_desc", lang), "€750M+ AUM"),
+        ("RATO Bank", t("tr_rato_desc", lang), "€120M+ deposits"),
+        ("Orion Securities", t("tr_orion_desc", lang), "€2.1B+ custody"),
+        ("Taurus Wealth", t("tr_taurus_desc", lang), "€95M+ AUM"),
+        ("AAA Law", t("tr_law_desc", lang), "100+ professionals"),
     ]
 
     fund_precedents = [
         {
-            "name": "Pet Care Growth Fund",
+            "name": t("tr_pet_name", lang),
             "manager": "1 Asset Management",
-            "description": "Built the largest veterinary clinic chain in the Baltics (~€15M revenue) via acquisitions and greenfield development. Active in 5 countries (LT, LV, EE, PL, RO). Leading regional consolidator alongside LuxVet / Cornerstone & OaktreeLuxVet: ~100 clinics, ~€100M revenue.",
-            "tags": ["Veterinary", "Roll-up", "5 countries"],
+            "description": t("tr_pet_desc", lang),
+            "tags": _get_pills("tr_pet_tags", lang),
         },
         {
-            "name": "Education Infrastructure Fund",
+            "name": t("tr_edu_name", lang),
             "manager": "1 Asset Management",
-            "description": "Invests in private schools and education-related infrastructure in Lithuania and other Baltic countries. Active investments in Šiaurės Licėjus, Erudito Licėjus, Saulės Gojus and Vilnius International School. B2B channel to ~2,000 enrolled families.",
-            "tags": ["Education", "Infrastructure", "Lithuania"],
+            "description": t("tr_edu_desc", lang),
+            "tags": _get_pills("tr_edu_tags", lang),
         },
         {
-            "name": "Broader 1AM portfolio",
+            "name": t("tr_broader_name", lang),
             "manager": "1 Asset Management",
-            "description": "Luxury hotels (Grand Hotel Vilnius), student housing, airport hotels, timberland, private debt, bonds, pre-IPO fund, listed equity (global). Trusted by Swedbank, SEB, Citadele, Santander, European Investment Fund.",
-            "tags": ["Multi-strategy", "Institutional LPs", "12+ funds"],
+            "description": t("tr_broader_desc", lang),
+            "tags": _get_pills("tr_broader_tags", lang),
         },
     ]
 
     return page(
-        "Track Record",
+        t("tr_page_title", lang),
         "/track-record",
         Section_(
-            Eyebrow("Track record"),
-            Heading(1, "Part of AAA Enterprises — ~€3B in group assets.", cls="mt-5 max-w-5xl"),
-            P(
-                "Curonia Capital is backed by AAA Enterprises, an international group of licensed financial companies "
-                "operating since 1993 across Luxembourg, Lithuania, North America and Dubai. The group encompasses banking, "
-                "asset management, investment banking, brokerage, family office and venture capital.",
-                cls="mt-8 text-xl text-ink-muted max-w-3xl leading-relaxed",
-            ),
+            Eyebrow(t("track_eyebrow", lang)),
+            Heading(1, t("tr_heading", lang), cls="mt-5 max-w-5xl"),
+            P(t("tr_lede", lang), cls="mt-8 text-xl text-ink-muted max-w-3xl leading-relaxed"),
             cls="pt-24",
         ),
 
-        # Group metrics
         Section_(
             Div(
-                Eyebrow("Group at a glance"),
-                Heading(2, "AAA Enterprises — key metrics.", cls="mt-4"),
+                Eyebrow(t("tr_glance_eyebrow", lang)),
+                Heading(2, t("tr_glance_heading", lang), cls="mt-4"),
                 cls="mb-14",
             ),
             Div(
-                MetricTile("~€3", "B", "Total group assets managed and administered"),
-                MetricTile("6,000", "+", "Active investors across the group"),
-                MetricTile("100", "+", "Professionals across AAA Enterprises"),
-                MetricTile("1993", "", "Year of founding — 30+ years of operations"),
+                MetricTile("~€3", "B", t("tr_metric_assets", lang)),
+                MetricTile("6,000", "+", t("tr_metric_investors", lang)),
+                MetricTile("100", "+", t("tr_metric_pros", lang)),
+                MetricTile("1993", "", t("tr_metric_founded", lang)),
                 cls="grid md:grid-cols-2 lg:grid-cols-4 gap-5",
             ),
             cls="border-b border-line",
         ),
 
-        # Group entities
         Section_(
             Div(
-                Eyebrow("Group companies"),
-                Heading(2, "A platform of licensed financial companies.", cls="mt-4 max-w-4xl"),
+                Eyebrow(t("tr_entities_eyebrow", lang)),
+                Heading(2, t("tr_entities_heading", lang), cls="mt-4 max-w-4xl"),
                 cls="mb-14",
             ),
             Div(
@@ -509,16 +489,11 @@ def track_record():
             ),
         ),
 
-        # Fund precedents
         Section_(
             Div(
-                Eyebrow("Fund precedents"),
-                Heading(2, "Where our team has operated.", cls="mt-4 max-w-3xl"),
-                P(
-                    "Direct operating experience from 1 Asset Management's portfolio — "
-                    "the track record that anchors how we invest and transform portfolio companies.",
-                    cls="mt-5 text-ink-muted text-lg max-w-3xl leading-relaxed",
-                ),
+                Eyebrow(t("tr_precedents_eyebrow", lang)),
+                Heading(2, t("tr_precedents_heading", lang), cls="mt-4 max-w-3xl"),
+                P(t("tr_precedents_lede", lang), cls="mt-5 text-ink-muted text-lg max-w-3xl leading-relaxed"),
                 cls="mb-14",
             ),
             Div(
@@ -528,7 +503,7 @@ def track_record():
                         P(p["manager"], cls="text-accent text-sm font-mono mb-4"),
                     ),
                     P(p["description"], cls="text-ink-muted text-sm leading-relaxed mb-5"),
-                    Div(*[Pill(t) for t in p["tags"]], cls="flex flex-wrap gap-2"),
+                    Div(*[Pill(tg) for tg in p["tags"]], cls="flex flex-wrap gap-2"),
                     cls="p-7 rounded-2xl bg-white border border-line",
                 ) for p in fund_precedents],
                 cls="grid md:grid-cols-3 gap-5",
@@ -538,47 +513,51 @@ def track_record():
 
         NewsSection(
             category="pe",
-            title="Private equity signal.",
-            subtitle="Latest from PE industry, Baltic M&A and financial markets.",
+            title=t("tr_pe_news_title", lang),
+            subtitle=t("tr_pe_news_sub", lang),
+            lang=lang,
         ),
 
-        CTASection(),
+        CTASection(lang=lang),
+        lang=lang,
     )
 
 
 # ---------- /team ----------
 
 @rt("/team")
-def team():
+def team(sess):
+    lang = get_lang(sess)
+    sess["_referer"] = "/team"
+
     return page(
-        "Team",
+        t("nav_team", lang),
         "/team",
         Section_(
-            Eyebrow("Team"),
-            Heading(1, "Partners with PE, VC, investment banking, AI engineering, and operational transformation experience.", cls="mt-5 max-w-4xl"),
-            P(
-                "A team that has built and exited Baltic platform companies, deployed production AI at global scale, "
-                "and executed >€250M in M&A transactions. We keep the partnership deliberately small and the "
-                "portfolio engagement deliberately deep.",
-                cls="mt-8 text-xl text-ink-muted max-w-3xl leading-relaxed",
-            ),
+            Eyebrow(t("team_eyebrow", lang)),
+            Heading(1, t("team_page_heading", lang), cls="mt-5 max-w-4xl"),
+            P(t("team_page_lede", lang), cls="mt-8 text-xl text-ink-muted max-w-3xl leading-relaxed"),
             cls="pt-24",
         ),
         Section_(
             Div(
-                *[_member_card(m) for m in TEAM],
+                *[_member_card(m, lang) for m in TEAM],
                 cls="grid md:grid-cols-2 gap-5",
             ),
         ),
         CTASection(
-            headline="Building a Baltic platform?",
-            body="If you are a founder running a profitable Baltic SME in healthcare, education, technology or services — and want a growth equity partner who deploys AI directly — tell us.",
-            cta_label="Write to us",
+            headline=t("team_cta_headline", lang),
+            body=t("team_cta_body", lang),
+            cta_label=t("team_cta_label", lang),
+            lang=lang,
         ),
+        lang=lang,
     )
 
 
-def _member_card(m):
+def _member_card(m, lang="en"):
+    bio_key = BIO_KEYS.get(m["name"])
+    bio = t(bio_key, lang) if bio_key else m["bio"]
     return Article(
         Div(
             Heading(3, m["name"], cls="mb-0"),
@@ -590,7 +569,7 @@ def _member_card(m):
             ),
             cls="flex items-center gap-3 mb-5",
         ),
-        P(m["bio"], cls="text-ink-muted leading-relaxed"),
+        P(bio, cls="text-ink-muted leading-relaxed"),
         cls="p-8 rounded-2xl bg-white border border-line",
     )
 
@@ -598,31 +577,26 @@ def _member_card(m):
 # ---------- /contact ----------
 
 @rt("/contact")
-def contact():
+def contact(sess):
+    lang = get_lang(sess)
+    sess["_referer"] = "/contact"
+
     return page(
-        "Contact",
+        t("contact_page_title", lang),
         "/contact",
         Section_(
-            Eyebrow("Contact"),
-            Heading(1, "Tell us about your business.", cls="mt-5 max-w-4xl"),
-            P(
-                "Curonia Capital partners with founder-led Baltic SMEs in healthcare, education, technology and services. "
-                "€2–5M cheques, growth equity. Send us a note — we'll tell you if we can help.",
-                cls="mt-8 text-xl text-ink-muted max-w-3xl leading-relaxed",
-            ),
+            Eyebrow(t("nav_contact", lang)),
+            Heading(1, t("contact_heading", lang), cls="mt-5 max-w-4xl"),
+            P(t("contact_lede", lang), cls="mt-8 text-xl text-ink-muted max-w-3xl leading-relaxed"),
             cls="pt-24",
         ),
         Section_(
             Div(
                 Div(
-                    Eyebrow("Write to us"),
+                    Eyebrow(t("contact_write", lang)),
                     A(CONTACT_EMAIL, href=f"mailto:{CONTACT_EMAIL}",
                       cls="mt-4 block text-xl md:text-2xl font-medium text-ink hover:text-accent break-all transition-colors"),
-                    P(
-                        "A short note on what your business does, your revenue, where you are based "
-                        "and what you are looking for is enough to start a conversation.",
-                        cls="mt-4 text-ink-muted leading-relaxed text-sm",
-                    ),
+                    P(t("contact_note", lang), cls="mt-4 text-ink-muted leading-relaxed text-sm"),
                     Div(
                         Button_("Email " + CONTACT_EMAIL, href=f"mailto:{CONTACT_EMAIL}", primary=True),
                         cls="mt-8",
@@ -631,15 +605,15 @@ def contact():
                 ),
                 Div(
                     Div(
-                        H3("Office", cls="text-sm font-mono tracking-widest uppercase text-ink-muted mb-3"),
+                        H3(t("contact_office", lang), cls="text-sm font-mono tracking-widest uppercase text-ink-muted mb-3"),
                         P("Curonia Capital", cls="text-ink"),
-                        P("Part of AAA Enterprises", cls="text-ink-muted"),
+                        P(t("footer_part_of", lang), cls="text-ink-muted"),
                         P("Upės str. 21", cls="text-ink-muted"),
                         P("Vilnius, Lithuania", cls="text-ink-muted"),
                         cls="mb-10",
                     ),
                     Div(
-                        H3("Parent company", cls="text-sm font-mono tracking-widest uppercase text-ink-muted mb-3"),
+                        H3(t("contact_parent", lang), cls="text-sm font-mono tracking-widest uppercase text-ink-muted mb-3"),
                         A("AAA Enterprises", href="https://www.aaaenterprises.lt/en", target="_blank", cls="block text-ink hover:text-accent mb-2"),
                         A("1 Asset Management", href="https://www.1am.lt", target="_blank", cls="block text-ink hover:text-accent mb-2"),
                     ),
@@ -648,6 +622,7 @@ def contact():
                 cls="grid md:grid-cols-2 gap-5",
             ),
         ),
+        lang=lang,
     )
 
 
