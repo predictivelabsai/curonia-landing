@@ -53,6 +53,11 @@ class SiteTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("LiquidRound", intelligence)
         self.assertIn('href="https://liquidround.com/"', intelligence)
         self.assertIn('rel="noopener noreferrer"', intelligence)
+        self.assertIn("LiquidRound, Curonia's proprietary AI platform", intelligence)
+
+        sectors = (await self.client.get("/sectors")).text
+        self.assertEqual(sectors.count("<h3>"), 6)
+        self.assertIn(TRANSLATIONS["sector_6_title"]["en"], sectors)
 
     async def test_translations_are_complete(self):
         for key, values in TRANSLATIONS.items():

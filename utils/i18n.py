@@ -22,10 +22,10 @@ _COPY = {
     "nav_contact": ("Contact", "Kontaktai", "Kontakti", "Kontakt"),
     "header_cta": ("Enquire", "Susisiekti", "Sazināties", "Võta ühendust"),
     "footer_tagline": (
-        "Discreet M&A counsel for the Baltics and Central and Eastern Europe, sharpened by proprietary intelligence and led by senior judgement.",
-        "Diskretiškos M&A konsultacijos Baltijos šalyse bei Vidurio ir Rytų Europoje, paremtos nuosava analitika ir patyrusių konsultantų sprendimais.",
-        "Diskrētas M&A konsultācijas Baltijā un Centrālajā un Austrumeiropā, ko stiprina pašu izstrādāta analītika un pieredzējušu konsultantu spriedums.",
-        "Diskreetne M&A nõustamine Baltikumis ning Kesk- ja Ida-Euroopas, mida toetab oma analüütikaplatvorm ja juhib kogenud nõustajate otsustusvõime.",
+        "Discreet M&A counsel for the Baltics and Central and Eastern Europe, sharpened by LiquidRound, our proprietary AI platform, and led by senior judgement.",
+        "Diskretiškos M&A konsultacijos Baltijos šalyse bei Vidurio ir Rytų Europoje, sustiprintos mūsų nuosava AI platforma LiquidRound ir paremtos patyrusių konsultantų sprendimais.",
+        "Diskrētas M&A konsultācijas Baltijā un Centrālajā un Austrumeiropā, ko stiprina mūsu pašu AI platforma LiquidRound un vada pieredzējušu konsultantu spriedums.",
+        "Diskreetne M&A nõustamine Baltikumis ning Kesk- ja Ida-Euroopas, mida toetab meie oma tehisintellektiplatvorm LiquidRound ja juhib kogenud nõustajate otsustusvõime.",
     ),
     "footer_explore": ("Explore", "Naršyti", "Izpētīt", "Sisukord"),
     "footer_company": ("Company", "Įmonė", "Uzņēmums", "Ettevõte"),
@@ -47,10 +47,10 @@ _COPY = {
         "Diskreetne M&A nõustamine Baltikumis ja KIEs",
     ),
     "desc_home": (
-        "Senior-led M&A advisory for owners, investors and boards in the Baltics and CEE, sharpened by proprietary deal intelligence built on LiquidRound.",
-        "Patyrusių konsultantų vadovaujamos M&A konsultacijos savininkams, investuotojams ir valdyboms Baltijos šalyse ir VRE, paremtos nuosava LiquidRound pagrindu sukurta analitika.",
-        "Pieredzējušu konsultantu vadītas M&A konsultācijas īpašniekiem, investoriem un valdēm Baltijā un CAE, ko stiprina pašu analītika, veidota uz LiquidRound bāzes.",
-        "Kogenud nõustajate juhitud M&A nõustamine omanikele, investoritele ja juhatustele Baltikumis ja KIEs, mida toetab LiquidRoundile ehitatud oma tehinguanalüütika.",
+        "Senior-led M&A advisory for owners, investors and boards in the Baltics and CEE, sharpened by LiquidRound, our proprietary AI deal platform.",
+        "Patyrusių konsultantų vadovaujamos M&A konsultacijos savininkams, investuotojams ir valdyboms Baltijos šalyse ir VRE, sustiprintos mūsų nuosava AI sandorių platforma LiquidRound.",
+        "Pieredzējušu konsultantu vadītas M&A konsultācijas īpašniekiem, investoriem un valdēm Baltijā un CAE, ko stiprina mūsu pašu izstrādātā AI darījumu platforma LiquidRound.",
+        "Kogenud nõustajate juhitud M&A nõustamine omanikele, investoritele ja juhatustele Baltikumis ja KIEs, mida toetab meie oma tehisintellektil põhinev tehinguplatvorm LiquidRound.",
     ),
     "title_advisory": ("M&A advisory services", "M&A konsultavimo paslaugos", "M&A konsultāciju pakalpojumi", "M&A nõustamisteenused"),
     "desc_advisory": (
@@ -66,17 +66,17 @@ _COPY = {
         "Oma tehinguanalüütika",
     ),
     "desc_intelligence": (
-        "How Curonia's proprietary platform, built on LiquidRound, supports sourcing, analysis, document review and materials, with advisers accountable for every output.",
-        "Kaip nuosava Curonia platforma, sukurta LiquidRound pagrindu, padeda paieškai, analizei, dokumentų peržiūrai ir medžiagos rengimui, o konsultantai atsako už kiekvieną rezultatą.",
-        "Kā Curonia platforma, veidota uz LiquidRound bāzes, atbalsta atlasi, analīzi, dokumentu pārskatīšanu un materiālu sagatavošanu, konsultantiem atbildot par katru rezultātu.",
-        "Kuidas Curonia LiquidRoundile ehitatud platvorm toetab otsingut, analüüsi, dokumentide läbivaatust ja materjalide koostamist, kusjuures iga tulemuse eest vastutab nõustaja.",
+        "How LiquidRound, Curonia's proprietary AI platform, supports sourcing, analysis, document review and materials, with advisers accountable for every output.",
+        "Kaip LiquidRound, nuosava Curonia AI platforma, padeda paieškai, analizei, dokumentų peržiūrai ir medžiagos rengimui, o konsultantai atsako už kiekvieną rezultatą.",
+        "Kā LiquidRound, Curonia pašu izstrādātā AI platforma, atbalsta atlasi, analīzi, dokumentu pārskatīšanu un materiālu sagatavošanu, konsultantiem atbildot par katru rezultātu.",
+        "Kuidas Curonia oma tehisintellektiplatvorm LiquidRound toetab otsingut, analüüsi, dokumentide läbivaatust ja materjalide koostamist, kusjuures iga tulemuse eest vastutab nõustaja.",
     ),
     "title_sectors": ("Sector focus", "Sektoriai", "Nozares", "Sektorid"),
     "desc_sectors": (
-        "Technology, healthcare, business services, industrials and consumer: sectors where Curonia advises on M&A in the Baltics and CEE.",
-        "Technologijos, sveikatos priežiūra, verslo paslaugos, pramonė ir vartojimas: sektoriai, kuriuose Curonia konsultuoja M&A klausimais Baltijos šalyse ir VRE.",
-        "Tehnoloģijas, veselības aprūpe, biznesa pakalpojumi, rūpniecība un patēriņš: nozares, kurās Curonia konsultē M&A darījumos Baltijā un CAE.",
-        "Tehnoloogia, tervishoid, äriteenused, tööstus ja tarbekaubad: sektorid, kus Curonia nõustab M&A tehinguid Baltikumis ja KIEs.",
+        "Technology, healthcare, business services, industrials, consumer and financial services: sectors where Curonia advises on M&A in the Baltics and CEE.",
+        "Technologijos, sveikatos priežiūra, verslo paslaugos, pramonė, vartojimas ir finansinės paslaugos: sektoriai, kuriuose Curonia konsultuoja M&A klausimais Baltijos šalyse ir VRE.",
+        "Tehnoloģijas, veselības aprūpe, biznesa pakalpojumi, rūpniecība, patēriņš un finanšu pakalpojumi: nozares, kurās Curonia konsultē M&A darījumos Baltijā un CAE.",
+        "Tehnoloogia, tervishoid, äriteenused, tööstus, tarbekaubad ja finantsteenused: sektorid, kus Curonia nõustab M&A tehinguid Baltikumis ja KIEs.",
     ),
     "title_team": ("Team", "Komanda", "Komanda", "Meeskond"),
     "desc_team": (
@@ -199,10 +199,10 @@ _COPY = {
         "Oma analüütika. *Inimese* otsustus.",
     ),
     "intel_lede": (
-        "Our proprietary platform, built on LiquidRound, maps buyer and target universes, assembles comparables and prepares first drafts, so our time goes into judgement rather than assembly. Advisers verify every output and remain accountable for every recommendation.",
-        "Mūsų nuosava platforma, sukurta LiquidRound pagrindu, sudaro pirkėjų ir taikinių žemėlapius, surenka palyginamuosius duomenis ir parengia pirminius juodraščius, todėl savo laiką skiriame vertinimui, o ne duomenų rinkimui. Konsultantai tikrina kiekvieną rezultatą ir atsako už kiekvieną rekomendaciją.",
-        "Mūsu platforma, veidota uz LiquidRound bāzes, kartē pircēju un mērķu loku, apkopo salīdzināmos datus un sagatavo pirmos projektus, lai mūsu laiks tiktu veltīts spriedumam, nevis datu vākšanai. Konsultanti pārbauda katru rezultātu un atbild par katru ieteikumu.",
-        "Meie LiquidRoundile ehitatud platvorm kaardistab ostjate ja sihtettevõtete ringi, koondab võrdlusandmed ja koostab esimesed mustandid, et meie aeg kuluks hinnangute andmisele, mitte andmete kogumisele. Nõustajad kontrollivad iga tulemust ja vastutavad iga soovituse eest.",
+        "LiquidRound, our proprietary AI platform, maps buyer and target universes, assembles comparables and prepares first drafts, so our time goes into judgement rather than assembly. Advisers verify every output and remain accountable for every recommendation.",
+        "LiquidRound, mūsų nuosava AI platforma, sudaro pirkėjų ir taikinių žemėlapius, surenka palyginamuosius duomenis ir parengia pirminius juodraščius, todėl savo laiką skiriame vertinimui, o ne duomenų rinkimui. Konsultantai tikrina kiekvieną rezultatą ir atsako už kiekvieną rekomendaciją.",
+        "LiquidRound, mūsu pašu izstrādātā AI platforma, kartē pircēju un mērķu loku, apkopo salīdzināmos datus un sagatavo pirmos projektus, lai mūsu laiks tiktu veltīts spriedumam, nevis datu vākšanai. Konsultanti pārbauda katru rezultātu un atbild par katru ieteikumu.",
+        "Meie oma tehisintellektiplatvorm LiquidRound kaardistab ostjate ja sihtettevõtete ringi, koondab võrdlusandmed ja koostab esimesed mustandid, et meie aeg kuluks hinnangute andmisele, mitte andmete kogumisele. Nõustajad kontrollivad iga tulemust ja vastutavad iga soovituse eest.",
     ),
     "cap_1_kicker": ("Source", "Paieška", "Atlase", "Otsing"),
     "cap_1_title": ("Buyer and target universes", "Pirkėjai ir taikiniai", "Pircēji un mērķi", "Ostjad ja sihtettevõtted"),
@@ -242,6 +242,7 @@ _COPY = {
         "Tehnoloģija paātrina sagatavošanos. Lēmumus tā nepieņem nekad.",
         "Tehnoloogia kiirendab ettevalmistust. Otsuseid see kunagi ei tee.",
     ),
+    "principle_label": ("Our principle", "Mūsų principas", "Mūsu princips", "Meie põhimõte"),
     "intel_link": ("How our intelligence works", "Kaip veikia mūsų analitika", "Kā darbojas mūsu analītika", "Kuidas meie analüütika töötab"),
 
     # Region
@@ -295,6 +296,7 @@ _COPY = {
         "Sākumam pietiek ar īsu uzņēmuma un mērķu aprakstu. Katru pieprasījumu izlasa pieredzējis konsultants, un tas tiek uzskatīts par konfidenciālu.",
         "Alustuseks piisab ettevõtte ja eesmärkide lühikirjeldusest. Iga päringu loeb läbi kogenud nõustaja ja seda käsitletakse konfidentsiaalselt.",
     ),
+    "cta_direct": ("Or write directly", "Arba rašykite tiesiogiai", "Vai rakstiet tieši", "Või kirjutage otse"),
     "cta_button": (
         "Arrange a confidential conversation",
         "Susitarti dėl konfidencialaus pokalbio",
@@ -392,10 +394,10 @@ _COPY = {
         "Oma analüütika *tehingu* igaks etapiks.",
     ),
     "platform_lede": (
-        "Curonia's proprietary platform, built on LiquidRound, brings research, analysis and drafting into one workflow. It extends what a small senior team can see and prepare, without replacing the judgement clients rely on.",
-        "Nuosava Curonia platforma, sukurta LiquidRound pagrindu, sujungia tyrimus, analizę ir dokumentų rengimą į vieną darbo eigą. Ji išplečia tai, ką nedidelė patyrusi komanda gali pamatyti ir parengti, nepakeisdama vertinimo, kuriuo pasikliauja klientai.",
-        "Curonia platforma, veidota uz LiquidRound bāzes, apvieno izpēti, analīzi un dokumentu sagatavošanu vienā darba plūsmā. Tā paplašina to, ko neliela pieredzējusi komanda spēj redzēt un sagatavot, neaizstājot spriedumu, uz kuru paļaujas klienti.",
-        "Curonia LiquidRoundile ehitatud platvorm koondab uuringud, analüüsi ja dokumentide koostamise ühte töövoogu. See avardab seda, mida väike kogenud meeskond suudab näha ja ette valmistada, asendamata otsustusvõimet, millele kliendid toetuvad.",
+        "LiquidRound, Curonia's proprietary AI platform, brings research, analysis and drafting into one workflow. It extends what a small senior team can see and prepare, without replacing the judgement clients rely on.",
+        "LiquidRound, nuosava Curonia AI platforma, sujungia tyrimus, analizę ir dokumentų rengimą į vieną darbo eigą. Ji išplečia tai, ką nedidelė patyrusi komanda gali pamatyti ir parengti, nepakeisdama vertinimo, kuriuo pasikliauja klientai.",
+        "LiquidRound, Curonia pašu izstrādātā AI platforma, apvieno izpēti, analīzi un dokumentu sagatavošanu vienā darba plūsmā. Tā paplašina to, ko neliela pieredzējusi komanda spēj redzēt un sagatavot, neaizstājot spriedumu, uz kuru paļaujas klienti.",
+        "Curonia oma tehisintellektiplatvorm LiquidRound koondab uuringud, analüüsi ja dokumentide koostamise ühte töövoogu. See avardab seda, mida väike kogenud meeskond suudab näha ja ette valmistada, asendamata otsustusvõimet, millele kliendid toetuvad.",
     ),
     "lifecycle_label": ("Lifecycle", "Ciklas", "Cikls", "Tehingu kulg"),
     "lifecycle_heading": (
@@ -466,7 +468,7 @@ _COPY = {
         "Tehnoloģija paātrina sagatavošanos. Curonia speciālisti pārbauda avotus, izvērtē pieņēmumus un vada katru klienta lēmumu.",
         "Tehnoloogia kiirendab ettevalmistust. Curonia inimesed kontrollivad allikaid, testivad eeldusi ja juhivad iga kliendi otsust.",
     ),
-    "built_on": ("Built on LiquidRound", "Sukurta LiquidRound pagrindu", "Veidots uz LiquidRound bāzes", "Ehitatud LiquidRoundile"),
+    "built_on": ("Proprietary technology", "Nuosava technologija", "Pašu tehnoloģija", "Oma tehnoloogia"),
     "platform_link": ("Visit LiquidRound", "Aplankyti LiquidRound", "Apmeklēt LiquidRound", "Ava LiquidRound"),
 
     # Sectors page
@@ -516,6 +518,18 @@ _COPY = {
         "Vartotojų prekių ženklai, švietimo platformos ir pasikartojančių paslaugų modeliai.",
         "Patēriņa zīmoli, izglītības platformas un regulāru pakalpojumu modeļi.",
         "Tarbijabrändid, haridusplatvormid ja püsiteenuse mudelid.",
+    ),
+    "sector_6_title": (
+        "Financial services and fintech",
+        "Finansinės paslaugos ir technologijos",
+        "Finanšu pakalpojumi un tehnoloģijas",
+        "Finantsteenused ja -tehnoloogia",
+    ),
+    "sector_6_body": (
+        "Payments, lending, insurance and wealth platforms, and the infrastructure behind them.",
+        "Mokėjimų, skolinimo, draudimo ir turto valdymo platformos bei jas palaikanti infrastruktūra.",
+        "Maksājumu, kreditēšanas, apdrošināšanas un kapitāla pārvaldības platformas, kā arī to infrastruktūra.",
+        "Makse-, laenu-, kindlustus- ja varahaldusplatvormid ning neid toetav taristu.",
     ),
     "sectors_note": (
         "Sector focus follows the mandate. If your business sits outside these areas, we are still glad to talk.",

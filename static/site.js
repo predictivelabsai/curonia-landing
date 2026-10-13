@@ -18,10 +18,10 @@ if ('IntersectionObserver' in window) {
   }, { rootMargin: '0px 0px -8% 0px' });
   reveals.forEach((el) => io.observe(el));
 
-  const art = document.querySelector('.hero-art');
-  if (art) {
-    new IntersectionObserver(([entry]) => art.classList.toggle('is-paused', !entry.isIntersecting)).observe(art);
-  }
+  const pauser = new IntersectionObserver((entries) => {
+    for (const entry of entries) entry.target.classList.toggle('is-paused', !entry.isIntersecting);
+  });
+  document.querySelectorAll('.hero-art, .intro-art').forEach((art) => pauser.observe(art));
 } else {
   reveals.forEach((el) => el.classList.add('is-visible'));
 }

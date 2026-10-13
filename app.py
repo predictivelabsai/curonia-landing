@@ -14,7 +14,7 @@ from starlette.middleware.gzip import GZipMiddleware
 from starlette.staticfiles import StaticFiles
 
 from components import (
-    COMPANY_NUMBER, CONTACT_EMAIL, HERO_ART, LEGAL_NAME, NIGHT_ART, PAGES,
+    COMPANY_NUMBER, CONTACT_EMAIL, CTA_ART, HERO_ART, INTRO_ART, LEGAL_NAME, NIGHT_ART, PAGES,
     PLATFORM_URL, REGISTERED_ADDRESS, SITE_URL, Button, Eyebrow, Heading,
     SectionHead, Section_, TextLink, absolute, page, rich, url_for,
 )
@@ -85,12 +85,16 @@ app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
 # Page sections -------------------------------------------------------------
 
-def page_intro(lang, index, label, heading, lede):
+def page_intro(lang, index, label, heading, lede, *, art=None):
     return Section_(
-        Eyebrow(index, label),
-        Heading(1, heading, cls="display-1"),
-        P(lede, cls="lede lede--lg"),
-        cls="page-intro",
+        Div(
+            Eyebrow(index, label),
+            Heading(1, heading, cls="display-1"),
+            P(lede, cls="lede lede--lg"),
+            cls="intro-copy",
+        ),
+        Div(NotStr(INTRO_ART[art]), cls="intro-visual") if art else None,
+        cls="page-intro", inner="wrap intro-inner",
     )
 
 
@@ -134,12 +138,11 @@ def intelligence_band(lang, *, with_link=True):
         ),
         capability_grid(lang, "cap", 4),
         Div(
-            NotStr('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor"/>'
-                   '<path d="M7 12.4l3.3 3.1L17 8.8" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>'),
-            P(t("intel_principle", lang)),
-            cls="principle-box",
+            P(t("principle_label", lang), cls="principle-label"),
+            P(t("intel_principle", lang), cls="principle-quote"),
+            TextLink(t("intel_link", lang), url_for(lang, "intelligence")) if with_link else None,
+            cls="principle-row",
         ),
-        Div(TextLink(t("intel_link", lang), url_for(lang, "intelligence")), cls="actions") if with_link else None,
         cls="section--night",
         inner="wrap night-inner",
     )
@@ -153,11 +156,22 @@ def night(section):
 
 def cta_band(lang):
     return Section_(
-        Eyebrow(None, t("cta_label", lang)),
-        Heading(2, t("cta_heading", lang), cls="display-2"),
-        P(t("cta_body", lang), cls="lede"),
-        Div(Button(t("cta_button", lang), url_for(lang, "contact"), variant="light"), cls="actions"),
-        cls="section--baltic cta-band",
+        Div(
+            Div(
+                Eyebrow(None, t("cta_label", lang), cls="eyebrow--rule"),
+                Heading(2, t("cta_heading", lang), cls="display-2"),
+                P(t("cta_body", lang), cls="lede"),
+                Div(Button(t("cta_button", lang), url_for(lang, "contact")),
+                    Div(Span(t("cta_direct", lang), cls="cta-direct-label"),
+                        A(CONTACT_EMAIL, href=f"mailto:{CONTACT_EMAIL}", cls="cta-email"),
+                        cls="cta-direct"),
+                    cls="actions"),
+                cls="cta-copy",
+            ),
+            Div(NotStr(CTA_ART), cls="cta-visual"),
+            cls="cta-panel",
+        ),
+        cls="cta-band",
     )
 
 
@@ -236,7 +250,7 @@ def home(lang):
 def advisory(lang):
     return page(
         lang, "advisory",
-        page_intro(lang, "01", t("nav_advisory", lang), t("advisory_heading", lang), t("advisory_lede", lang)),
+        page_intro(lang, "01", t("nav_advisory", lang), t("advisory_heading", lang), t("advisory_lede", lang), art="advisory"),
         Section_(service_rows(lang, detailed=True), cls="section--tight-top"),
         Section_(
             SectionHead("02", t("clients_label", lang), t("clients_heading", lang)),
@@ -259,7 +273,7 @@ def advisory(lang):
 def intelligence(lang):
     return page(
         lang, "intelligence",
-        page_intro(lang, "01", t("nav_intelligence", lang), t("platform_heading", lang), t("platform_lede", lang)),
+        page_intro(lang, "01", t("nav_intelligence", lang), t("platform_heading", lang), t("platform_lede", lang), art="intelligence"),
         Section_(
             SectionHead("02", t("lifecycle_label", lang), t("lifecycle_heading", lang)),
             capability_grid(lang, "platform", 4, kicker=False),
@@ -287,11 +301,11 @@ def intelligence(lang):
 def sectors(lang):
     return page(
         lang, "sectors",
-        page_intro(lang, "01", t("nav_sectors", lang), t("sectors_heading", lang), t("sectors_lede", lang)),
+        page_intro(lang, "01", t("nav_sectors", lang), t("sectors_heading", lang), t("sectors_lede", lang), art="sectors"),
         Section_(
             Ol(*[Li(Span(f"0{i}", cls="cap-kicker"), H3(t(f"sector_{i}_title", lang)),
                     P(t(f"sector_{i}_body", lang)), data_reveal="")
-                 for i in range(1, 6)], cls="sector-grid"),
+                 for i in range(1, 7)], cls="sector-grid"),
             P(t("sectors_note", lang), cls="note"),
             cls="section--tight-top",
         ),
@@ -327,7 +341,7 @@ def person_card(member, lang):
 def team(lang):
     return page(
         lang, "team",
-        page_intro(lang, "01", t("nav_team", lang), t("team_heading", lang), t("team_lede", lang)),
+        page_intro(lang, "01", t("nav_team", lang), t("team_heading", lang), t("team_lede", lang), art="team"),
         Section_(Ul(*[person_card(m, lang) for m in TEAM], cls="team-grid"), cls="section--tight-top"),
         cta_band(lang),
         title=t("title_team", lang), description=t("desc_team", lang),
@@ -338,7 +352,7 @@ def contact(lang):
     subject = quote(t("contact_subject", lang))
     return page(
         lang, "contact",
-        page_intro(lang, "01", t("nav_contact", lang), t("contact_heading", lang), t("contact_lede", lang)),
+        page_intro(lang, "01", t("nav_contact", lang), t("contact_heading", lang), t("contact_lede", lang), art="contact"),
         Section_(
             Div(
                 Div(

@@ -372,3 +372,131 @@ NIGHT_ART = """
   </g>
 </svg>
 """
+
+# Page motifs ---------------------------------------------------------------
+# Abstract fine-line drawings for the empty side of page intros. Decorative only.
+
+def _svg(body, view="0 0 480 420", cls="intro-art"):
+    return (f'<svg class="{cls}" viewBox="{view}" aria-hidden="true" focusable="false">'
+            f"{body}</svg>")
+
+
+def _label(x, y, text, anchor="start"):
+    return f'<text x="{x}" y="{y}" text-anchor="{anchor}">{text}</text>'
+
+
+def _intelligence_art():
+    # A wide universe of candidates narrows through three screens to one shortlist.
+    dots, lines = [], []
+    rows = [(r, 46 + r * 26) for r in range(13)]
+    target = (404, 210)
+    for r, y in rows:
+        for c in range(3):
+            x = 40 + c * 26 + (r % 2) * 13
+            keep = (r * 3 + c) % 4 == 0
+            dots.append(f'<circle cx="{x}" cy="{y}" r="{2.4 if keep else 1.6}" class="{"dot-on" if keep else "dot-off"}"/>')
+            if keep:
+                lines.append(f'<path pathLength="1" d="M{x} {y}C{x + 140} {y},{target[0] - 170} {target[1]},{target[0]} {target[1]}"/>')
+    screens = "".join(
+        f'<line x1="{x}" y1="{60 + i * 34}" x2="{x}" y2="{360 - i * 34}" class="screen"/>'
+        for i, x in enumerate((170, 250, 330))
+    )
+    labels = (_label(40, 26, "UNIVERSE") + _label(170, 48, "SCREEN", "middle")
+              + _label(250, 82, "ANALYSE", "middle") + _label(330, 116, "REVIEW", "middle")
+              + _label(404, 252, "SHORTLIST", "middle"))
+    node = (f'<circle class="pulse" cx="{target[0]}" cy="{target[1]}" r="6"/>'
+            f'<circle cx="{target[0]}" cy="{target[1]}" r="6" class="node-amber"/>'
+            f'<circle cx="{target[0]}" cy="{target[1]}" r="16" class="ring"/>')
+    return _svg(f'<g class="flow">{"".join(lines)}</g>{screens}<g>{"".join(dots)}</g>{node}{labels}')
+
+
+def _advisory_art():
+    # Two sides of a transaction meet in one considered outcome.
+    ticks = "".join(
+        f'<line x1="240" y1="22" x2="240" y2="{30 if i % 3 else 36}" transform="rotate({i * 10} 240 210)" class="tick"/>'
+        for i in range(36)
+    )
+    return _svg(
+        '<circle cx="240" cy="210" r="188" class="orbit"/>' + ticks
+        + '<circle cx="180" cy="210" r="118" class="line"/>'
+        + '<circle cx="300" cy="210" r="118" class="line"/>'
+        + '<path d="M240 108.4A118 118 0 0 1 240 311.6A118 118 0 0 1 240 108.4Z" class="lens"/>'
+        + '<line x1="20" y1="210" x2="460" y2="210" class="horizon"/>'
+        + '<circle class="pulse" cx="240" cy="210" r="5"/><circle cx="240" cy="210" r="5" class="node-amber"/>'
+        + _label(120, 214, "SELL-SIDE", "middle") + _label(360, 214, "BUY-SIDE", "middle")
+        + _label(240, 404, "MANDATE", "middle")
+    )
+
+
+def _sectors_art():
+    # Six sectors around one mandate.
+    import math
+    parts = ['<circle cx="240" cy="210" r="170" class="orbit dashed"/>',
+             '<circle cx="240" cy="210" r="104" class="line"/>',
+             '<circle cx="240" cy="210" r="46" class="line"/>']
+    for i in range(6):
+        a = math.radians(-90 + i * 60)
+        x, y = 240 + 170 * math.cos(a), 210 + 170 * math.sin(a)
+        mx, my = 240 + 104 * math.cos(a), 210 + 104 * math.sin(a)
+        lx, ly = 240 + 196 * math.cos(a), 210 + 196 * math.sin(a) + 3
+        parts.append(f'<line pathLength="1" x1="240" y1="210" x2="{x:.1f}" y2="{y:.1f}" class="spoke"/>')
+        parts.append(f'<circle cx="{mx:.1f}" cy="{my:.1f}" r="2.2" class="node-ink"/>')
+        parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4.5" class="node-amber"/>')
+        parts.append(_label(f"{lx:.1f}", f"{ly:.1f}", f"0{i + 1}", "middle"))
+    parts.append('<circle class="pulse" cx="240" cy="210" r="5"/><circle cx="240" cy="210" r="5" class="node-ink"/>')
+    return _svg("".join(parts), view="0 0 480 420")
+
+
+def _team_art():
+    # A small group on the contour lines of the spit.
+    contours = "".join(
+        f'<path d="M{-20 + i * 26} 420C{80 + i * 26} 330 {150 + i * 26} 240 {210 + i * 26} 160S{330 + i * 26} 40 {470 + i * 20} 0" '
+        f'class="contour" opacity="{1 - i * 0.16:.2f}"/>'
+        for i in range(5)
+    )
+    people = [(150, 300), (214, 214), (268, 150), (330, 96), (226, 330)]
+    links = "".join(
+        f'<line pathLength="1" x1="{a[0]}" y1="{a[1]}" x2="{b[0]}" y2="{b[1]}" class="link"/>'
+        for a, b in [(people[0], people[1]), (people[1], people[2]), (people[2], people[3]),
+                     (people[0], people[4]), (people[4], people[1])]
+    )
+    nodes = "".join(
+        f'<circle cx="{x}" cy="{y}" r="15" class="seat"/><circle cx="{x}" cy="{y}" r="4" class="node-amber"/>'
+        for x, y in people
+    )
+    return _svg(contours + links + nodes)
+
+
+def _contact_art():
+    # The London office as a quiet beacon.
+    rings = "".join(f'<circle cx="240" cy="210" r="{r}" class="line" opacity="{1 - i * 0.17:.2f}"/>'
+                    for i, r in enumerate((34, 72, 114, 158, 200)))
+    return _svg(
+        rings
+        + '<line x1="240" y1="0" x2="240" y2="420" class="cross"/><line x1="20" y1="210" x2="460" y2="210" class="cross"/>'
+        + '<circle class="pulse" cx="240" cy="210" r="6"/><circle cx="240" cy="210" r="6" class="node-amber"/>'
+        + _label(258, 194, "LONDON · EC3N 1AD") + _label(258, 236, "51.511° N  0.074° W")
+    )
+
+
+def _cta_art():
+    # Ripples from a first conversation, crossed by the horizon line.
+    ripples = "".join(
+        f'<ellipse cx="240" cy="160" rx="{36 + i * 40}" ry="{16 + i * 22}" class="line" opacity="{1 - i * 0.13:.2f}"/>'
+        for i in range(6)
+    )
+    return _svg(
+        ripples + '<line x1="0" y1="160" x2="480" y2="160" class="horizon"/>'
+        + '<circle class="pulse" cx="240" cy="160" r="5"/><circle cx="240" cy="160" r="5" class="node-amber"/>',
+        view="0 0 480 320", cls="intro-art cta-art",
+    )
+
+
+INTRO_ART = {
+    "intelligence": _intelligence_art(),
+    "advisory": _advisory_art(),
+    "sectors": _sectors_art(),
+    "team": _team_art(),
+    "contact": _contact_art(),
+}
+CTA_ART = _cta_art()

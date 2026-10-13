@@ -2,7 +2,7 @@
 
 ## Positioning
 
-Curonia Capital Ltd is a senior-led M&A advisory boutique for the Baltics and Central and Eastern Europe. It advises owners, investors and boards on sales, acquisitions and strategic options, sharpened by a proprietary deal-intelligence platform built on LiquidRound. Technology prepares; people judge.
+Curonia Capital Ltd is a senior-led M&A advisory boutique for the Baltics and Central and Eastern Europe. It advises owners, investors and boards on sales, acquisitions and strategic options, sharpened by LiquidRound, its proprietary AI deal platform (liquidround.com). Technology prepares; people judge.
 
 Brand idea: **Quiet precision.** The name refers to the Curonian Spit, the narrow line of dune between the Baltic Sea and the lagoon. Baltic amber is the accent material.
 
@@ -11,7 +11,7 @@ Audience: founders and families, private equity and family offices, corporate bo
 ## Messaging pillars
 
 1. **Senior-led discretion.** A senior adviser leads every mandate; we accept a limited number.
-2. **Proprietary intelligence.** Our platform, built on LiquidRound, maps buyers and targets, assembles comparables and drafts materials.
+2. **Proprietary intelligence.** LiquidRound, our proprietary AI platform, maps buyers and targets, assembles comparables and drafts materials.
 3. **Judgement stays human.** Advisers verify every output and own every recommendation.
 4. **Baltic roots, CEE reach.** Lithuania, Latvia and Estonia, with a cross-border view of Poland and the wider region, advised from London.
 
